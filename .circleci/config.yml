@@ -28,7 +28,7 @@ jobs:
           name: Load Docker image layer cache
           command: |
             set +o pipefail
-            docker load -i /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz ; docker images;
+            docker load -i /caches/${CIRCLE_PROJECT_REPONAME}-app.tar.gz ; docker images;
 
       - run:
           name: Build application Docker image
@@ -44,7 +44,7 @@ jobs:
 
             # docker build --tag ${CIRCLE_PROJECT_REPONAME} . | grep '\-\-\->' | grep -v 'Using cache' | sed -e 's/[ >-]//g' > /tmp/layers.txt
             # docker save $(cat /tmp/layers.txt) | gzip > /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
-            docker save -o /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz ${CIRCLE_PROJECT_REPONAME}
+            docker save -o /caches/${CIRCLE_PROJECT_REPONAME}-app.tar.gz ${CIRCLE_PROJECT_REPONAME}
       - save_cache:
           key: v1-{{ .Branch }}
           paths:

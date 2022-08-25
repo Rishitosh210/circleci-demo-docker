@@ -6,7 +6,8 @@ jobs:
       - image: docker:17.05.0-ce-git
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Install dependencies
           command: |
@@ -42,10 +43,6 @@ jobs:
           name: Save Docker image layer cache
           command: |
             mkdir -p /caches
-            # See here: https://github.com/mozmeao/snippets-service/pull/208/files
-            # and here: https://stackoverflow.com/q/49965396
-            # The build commands here will be completely cached, and so very quick
-            #
             docker build --tag ${CIRCLE_PROJECT_REPONAME} . | grep '\-\-\->' | grep -v 'Using cache' | sed -e 's/[ >-]//g' > /tmp/layers.txt
             docker save $(cat /tmp/layers.txt) | gzip > /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
       - save_cache:

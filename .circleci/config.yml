@@ -41,7 +41,7 @@ jobs:
           name: Save Docker image layer cache
           command: |
             mkdir -p /caches
-            # docker build --tag ${CIRCLE_PROJECT_REPONAME}-1 . | grep '\-\-\->' | grep -v 'Using cache' | sed -e 's/[ >-]//g' > /tmp/layers.txt
+            docker build --tag ${CIRCLE_PROJECT_REPONAME}-1 . | grep '\-\-\->' | grep -v 'Using cache' | sed -e 's/[ >-]//g' > /tmp/layers.txt
             docker save ${CIRCLE_PROJECT_REPONAME}-1 -o /caches/${CIRCLE_PROJECT_REPONAME}.tar
             # docker save $(cat /tmp/layers.txt) | gzip > /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
       - save_cache:

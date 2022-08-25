@@ -30,7 +30,7 @@ jobs:
             set +o pipefail
             if [ -f /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz ]; then gunzip -c /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz | docker load; docker images; fi
 
-    - run:
+      - run:
           name: Build application Docker image
           command: |
             export IMAGE_TAG_PREFIX=$(echo branch-master | sed 's/\//-/' )

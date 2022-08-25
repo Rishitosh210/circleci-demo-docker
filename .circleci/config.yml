@@ -39,7 +39,7 @@ jobs:
             mkdir -p /caches
             docker build --tag ${CIRCLE_PROJECT_REPONAME}-1 . | grep '\-\-\->' | grep -v 'Using cache' | sed -e 's/[ >-]//g' > /tmp/layers.txt
             # docker save $(cat /tmp/layers.txt) -o /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
-            docker save $(cat /tmp/layers.txt) -o /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
+            docker save ${CIRCLE_PROJECT_REPONAME}-1 -o /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
       - save_cache:
           key: v1-{{ .Branch }}-0.1
 

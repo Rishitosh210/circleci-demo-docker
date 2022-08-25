@@ -17,15 +17,14 @@ jobs:
 
       - restore_cache:
           keys:
-            - v1-{{ .Branch }}-0.4
+            - v1-{{ .Branch }}-{{ checksum "Dockerfile" }}
       - run:
           name: Load Docker image layer cache
           command: |
             set +o pipefail
             echo $(ls /caches/)
             if [ -f /caches/${CIRCLE_PROJECT_REPONAME}.tar ];then
-            #  gunzip -c /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz | docker load;
-              docker load < /caches/${CIRCLE_PROJECT_REPONAME}.tar
+              gunzip -c /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz | docker load;
               docker images;
             fi
 
@@ -36,16 +35,15 @@ jobs:
             export IMAGE_NAME=applicaster
             export IMAGE_TAG=$IMAGE_TAG_PREFIX-${CIRCLE_SHA1:0:7}
             docker images
-            docker build --tag ${CIRCLE_PROJECT_REPONAME}-1-0.1 .
+            docker build --tag ${CIRCLE_PROJECT_REPONAME}-$IMAGE_TAG .
       - run:
           name: Save Docker image layer cache
           command: |
             mkdir -p /caches
-            docker build --tag ${CIRCLE_PROJECT_REPONAME}-1-0.1 . | grep '\-\-\->' | grep -v 'Using cache' | sed -e 's/[ >-]//g' > /tmp/layers.txt
-            docker save ${CIRCLE_PROJECT_REPONAME}-1-0.1 -o /caches/${CIRCLE_PROJECT_REPONAME}.tar
-            # docker save $(cat /tmp/layers.txt) | gzip > /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
+            docker build --tag ${CIRCLE_PROJECT_REPONAME} . | grep '\-\-\->' | grep -v 'Using cache' | sed -e 's/[ >-]//g' > /tmp/layers.txt
+            docker save $(cat /tmp/layers.txt) | gzip > /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
       - save_cache:
-          key: v1-{{ .Branch }}-0.4
+          key: v1-{{ .Branch }}-{{ checksum "Dockerfile" }}
           paths:
             - /caches/
       - run:

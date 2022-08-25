@@ -22,15 +22,6 @@ jobs:
             echo "export IMAGE_NAME=applicaster/zapp-k8" >> $BASH_ENV
             echo "export IMAGE_TAG=$IMAGE_TAG_PREFIX-${CIRCLE_SHA1:0:7}" >> $BASH_ENV
 
-#      - restore_cache:
-#          keys:
-#            - v1-{{ .Branch }}
-#      - run:
-#          name: Load Docker image layer cache
-#          command: |
-#            set +o pipefail
-#            if [ -f /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz ]; then gunzip -c /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz | docker load; docker images; fi
-
       - run:
           name: Build application Docker image
           command: |
@@ -39,17 +30,8 @@ jobs:
             export IMAGE_TAG=$IMAGE_TAG_PREFIX-${CIRCLE_SHA1:0:7}
             echo $(ls)
             docker build --tag ${CIRCLE_PROJECT_REPONAME}-0.1 .
-#      - run:
-#          name: Save Docker image layer cache
-#          command: |
-#            mkdir -p /caches
-#            docker build --tag ${CIRCLE_PROJECT_REPONAME} . | grep '\-\-\->' | grep -v 'Using cache' | sed -e 's/[ >-]//g' > /tmp/layers.txt
-#            docker save $(cat /tmp/layers.txt) | gzip > /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
-#      - save_cache:
-#          key: v1-{{ .Branch }}
-#          paths:
-#            - /caches/
       - run:
           name: checking
           command: |
            echo $(ls /caches/)
+

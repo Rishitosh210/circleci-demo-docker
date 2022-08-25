@@ -28,13 +28,15 @@ jobs:
           name: Load Docker image layer cache
           command: |
             set +o pipefail
-            if [ -f /caches/${CIRCLE_PROJECT_REPONAME}-app.tar.gz ]; then
-              gunzip -c /caches/${CIRCLE_PROJECT_REPONAME}-app.tar.gz | docker load;
-              docker images;
-            fi
+            if [ -f /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz ]; then gunzip -c /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz | docker load; docker images; fi
+
       - run:
           name: Build application Docker image
           command: |
+            export IMAGE_TAG_PREFIX=$(echo branch-master | sed 's/\//-/' )
+            export IMAGE_NAME=applicaster
+            export IMAGE_TAG=$IMAGE_TAG_PREFIX-${CIRCLE_SHA1:0:7}
+            echo $(ls)
             docker build --tag ${CIRCLE_PROJECT_REPONAME} .
       - run:
           name: Save Docker image layer cache
@@ -43,9 +45,9 @@ jobs:
             # See here: https://github.com/mozmeao/snippets-service/pull/208/files
             # and here: https://stackoverflow.com/q/49965396
             # The build commands here will be completely cached, and so very quick
-
+            #
             docker build --tag ${CIRCLE_PROJECT_REPONAME} . | grep '\-\-\->' | grep -v 'Using cache' | sed -e 's/[ >-]//g' > /tmp/layers.txt
-            docker save $(cat /tmp/layers.txt) | gzip > /caches/${CIRCLE_PROJECT_REPONAME}-app.tar.gz
+            docker save $(cat /tmp/layers.txt) | gzip > /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
       - save_cache:
           key: v1-{{ .Branch }}
           paths:

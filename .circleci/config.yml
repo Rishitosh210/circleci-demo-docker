@@ -13,8 +13,7 @@ jobs:
             apk add --no-cache \
               py-pip=9.0.0-r1
             pip install \
-              docker-compose==1.12.0 \
-              awscli==1.11.76
+              docker-compose==1.12.0
       - run:
           name: Add common env vars
           command: |
@@ -38,8 +37,8 @@ jobs:
             export IMAGE_TAG_PREFIX=$(echo branch-master | sed 's/\//-/' )
             export IMAGE_NAME=applicaster
             export IMAGE_TAG=$IMAGE_TAG_PREFIX-${CIRCLE_SHA1:0:7}
-
-            docker build --cache-from=refactor -t "$IMAGE_NAME:$IMAGE_TAG" -t "refactor" .
+            echo $(ls)
+#            docker build --cache-from=refactor -t "$IMAGE_NAME:$IMAGE_TAG" -t "refactor" .
       - run:
           name: Save Docker image layer cache
           command: |

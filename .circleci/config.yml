@@ -38,7 +38,7 @@ jobs:
             export IMAGE_NAME=applicaster
             export IMAGE_TAG=$IMAGE_TAG_PREFIX-${CIRCLE_SHA1:0:7}
             echo $(ls)
-            docker build --tag ${CIRCLE_PROJECT_REPONAME} .
+            docker build --tag ${CIRCLE_PROJECT_REPONAME}-0.1 .
 #      - run:
 #          name: Save Docker image layer cache
 #          command: |

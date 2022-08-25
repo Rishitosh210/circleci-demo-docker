@@ -14,12 +14,6 @@ jobs:
               py-pip=9.0.0-r1
             pip install \
               docker-compose==1.12.0
-      - run:
-          name: Add common env vars
-          command: |
-            export IMAGE_TAG_PREFIX=$(echo branch-$CIRCLE_BRANCH | sed 's/\//-/' )
-            echo "export IMAGE_NAME=applicaster/zapp-k8" >> $BASH_ENV
-            echo "export IMAGE_TAG=$IMAGE_TAG_PREFIX-${CIRCLE_SHA1:0:7}" >> $BASH_ENV
 
       - restore_cache:
           keys:
@@ -28,6 +22,7 @@ jobs:
           name: Load Docker image layer cache
           command: |
             set +o pipefail
+            echo $(ls /caches/)
             if [ -f /caches/${CIRCLE_PROJECT_REPONAME}-1.tar.gz ]; then gunzip -c /caches/${CIRCLE_PROJECT_REPONAME}-1.tar.gz | docker load; docker images; fi
 
       - run:
@@ -43,7 +38,8 @@ jobs:
           command: |
             mkdir -p /caches
             docker build --tag ${CIRCLE_PROJECT_REPONAME}-1 . | grep '\-\-\->' | grep -v 'Using cache' | sed -e 's/[ >-]//g' > /tmp/layers.txt
-            docker save $(cat /tmp/layers.txt) -o /caches/${CIRCLE_PROJECT_REPONAME}-1.tar.gz
+            # docker save $(cat /tmp/layers.txt) -o /caches/${CIRCLE_PROJECT_REPONAME}-1.tar.gz
+            docker save $(cat /tmp/layers.txt) | gzip > /caches/${CIRCLE_PROJECT_REPONAME}-1.tar.gz
       - save_cache:
           key: v1-{{ .Branch }}
           paths:

@@ -28,19 +28,22 @@ jobs:
           name: Load Docker image layer cache
           command: |
             set +o pipefail
-            docker load -i /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz; docker images;
+            docker load -i /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz ; docker images;
 
       - run:
           name: Build application Docker image
           command: |
-            echo $(ls)
             docker build --tag ${CIRCLE_PROJECT_REPONAME} .
       - run:
           name: Save Docker image layer cache
           command: |
             mkdir -p /caches
-#            docker build --tag ${CIRCLE_PROJECT_REPONAME} . | grep '\-\-\->' | grep -v 'Using cache' | sed -e 's/[ >-]//g' > /tmp/layers.txt
-#            docker save $(cat /tmp/layers.txt) | gzip > /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
+            # See here: https://github.com/mozmeao/snippets-service/pull/208/files
+            # and here: https://stackoverflow.com/q/49965396
+            # The build commands here will be completely cached, and so very quick
+
+            # docker build --tag ${CIRCLE_PROJECT_REPONAME} . | grep '\-\-\->' | grep -v 'Using cache' | sed -e 's/[ >-]//g' > /tmp/layers.txt
+            # docker save $(cat /tmp/layers.txt) | gzip > /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
             docker save -o /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz ${CIRCLE_PROJECT_REPONAME}
       - save_cache:
           key: v1-{{ .Branch }}

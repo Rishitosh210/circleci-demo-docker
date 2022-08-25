@@ -14,9 +14,11 @@ ENV UID 1000
 ENV DJANGO_SETTINGS braini
 ENV TYCHO_URL http://docker.for.mac.localhost:5000
 
+
 RUN adduser --disabled-login --home $HOME --shell /bin/bash --uid $UID $USER && \
    chown -R $UID:$UID $HOME
 #Switch the working directory
+
 
 WORKDIR $APP_HOME
 

@@ -17,7 +17,7 @@ jobs:
 
       - restore_cache:
           keys:
-            - v1-{{ .Branch }}-{{ checksum "Dockerfile" }}
+            - v1-{{ .Branch }}-0.1
       - run:
           name: Load Docker image layer cache
           command: |
@@ -41,7 +41,7 @@ jobs:
             # docker save $(cat /tmp/layers.txt) -o /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
             docker save $(cat /tmp/layers.txt) -o /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
       - save_cache:
-          key: v1-{{ .Branch }}-{{ checksum "Dockerfile" }}
+          key: v1-{{ .Branch }}-0.1
 
           paths:
             - /caches/

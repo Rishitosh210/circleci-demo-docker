@@ -38,7 +38,7 @@ jobs:
             export IMAGE_NAME=applicaster
             export IMAGE_TAG=$IMAGE_TAG_PREFIX-${CIRCLE_SHA1:0:7}
             echo $(ls)
-#            docker build --cache-from=refactor -t "$IMAGE_NAME:$IMAGE_TAG" -t "refactor" .
+            docker build --cache-from=refactor -t "$IMAGE_NAME:$IMAGE_TAG" -t "refactor" .
       - run:
           name: Save Docker image layer cache
           command: |

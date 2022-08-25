@@ -23,9 +23,9 @@ jobs:
           command: |
             set +o pipefail
             echo $(ls /caches/)
-            if [ -f /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz ];then
+            if [ -f /caches/${CIRCLE_PROJECT_REPONAME}.tar ];then
             #  gunzip -c /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz | docker load;
-              docker load < /caches/${CIRCLE_PROJECT_REPONAME}.tar.gz
+              docker load < /caches/${CIRCLE_PROJECT_REPONAME}.tar
               docker images;
             fi
 

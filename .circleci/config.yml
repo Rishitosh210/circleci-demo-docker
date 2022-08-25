@@ -28,8 +28,11 @@ jobs:
           name: Load Docker image layer cache
           command: |
             set +o pipefail
-            docker load -i /caches/${CIRCLE_PROJECT_REPONAME}-app.tar.gz ; docker images;
 
+            if [ -f /caches/${CIRCLE_PROJECT_REPONAME}-app.tar.gz ]; then
+              docker load -i /caches/${CIRCLE_PROJECT_REPONAME}-app.tar.gz ;
+              docker images;
+            fi
       - run:
           name: Build application Docker image
           command: |
